@@ -1,0 +1,59 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+
+    <ui:define name="body">
+        <s:div styleClass="backLink">
+        	<s:link view="/records.xhtml" value="&#171; &nbsp; #{messages.BackToZones}">
+        		<f:param name="zone" value="#{recordAction.domain.name}"/>
+        	</s:link>
+		</s:div>
+		<h:form>
+		
+		<rich:panel>
+			<f:facet name="header">
+				<h:outputText value="#{messages.Edit} #{messages.Record}" />
+			</f:facet>
+			
+				<h:panelGrid columns="1">
+					<s:decorate id="recordNameField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordName}</ui:define>
+						<h:inputText id="recordName" value="#{selectedRecord.name}" required="true"/>
+					</s:decorate>
+					
+					<s:decorate id="recordTypeField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordType}</ui:define>
+						<h:selectOneMenu value="#{selectedRecord.type}" required="true">
+							<s:selectItems var="type" value="#{normalRecordTypes}" label="#{type}" />
+						</h:selectOneMenu>	
+					</s:decorate>
+					
+					<s:decorate id="recordTTLField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.TimeToLive}</ui:define>
+						<h:inputText id="recordTTL" value="#{selectedRecord.ttl}" size="6"/>
+					</s:decorate>
+
+					<s:decorate id="recordPriorityField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.Priority}</ui:define>
+						<h:inputText id="priority" value="#{selectedRecord.prio}" size="6" disabled="false"/>
+					</s:decorate>
+					
+					<s:decorate id="recordValueField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordContent}</ui:define>
+						<h:inputText id="recordValue" value="#{selectedRecord.content}" required="true" />
+					</s:decorate>		
+				</h:panelGrid>
+	    </rich:panel>
+	   		<h:commandButton action="#{recordAction.cancelEdit}" value="#{messages['RecordAction.Cancel']}"/>
+	   		<h:commandButton action="#{recordAction.edit}" value="#{messages.Edit}"/>
+	    </h:form>
+		
+    </ui:define>
+</ui:composition>

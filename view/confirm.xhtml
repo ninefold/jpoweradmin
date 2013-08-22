@@ -1,0 +1,34 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+    <ui:define name="body">
+	    <s:div styleClass="backLink">
+	    	<s:link view="#{backview}" value="&#171; &nbsp; #{backviewName}">
+	    </s:link></s:div>
+	
+	
+		<rich:panel>
+			<f:facet name="header">
+				<h:outputText value="#{messages.Confirm}"/>
+			</f:facet>
+			<p>#{confirmDetails}</p>
+			<s:span rendered="#{selectedItems.size == 0}"><em>#{messages.NothingSelected}</em></s:span>
+	       	<ul>
+	        	<ui:repeat var="item" value="#{selectedItems}">
+					<li><h:outputText value="#{item}"/></li>        	
+	        	</ui:repeat>
+			</ul>
+		</rich:panel>
+		<!-- For some reason, I cannot pass the actual deleteAction page variable into the action attribute of the s:button tag.
+		Hence this cludge
+		 -->
+		<s:button value="#{messages.Delete}" action="#{zoneAction.deleteZones}" view="/zones.xhtml" rendered="#{deleteAction == 'deleteZones'}" />
+		<s:button value="#{messages.Delete}" action="#{recordAction.deleteSelected}" view="/records.xhtml" rendered="#{deleteAction == 'deleteRecords'}" />
+   </ui:define>
+</ui:composition>

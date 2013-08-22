@@ -1,0 +1,92 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+    
+    <ui:define name="body">
+		<h1>#{messages['Header.AccountProperties']}</h1>
+		
+		<s:div styleClass="backLink">
+		   		<s:link view="/zones.xhtml" value="&#171; &nbsp; #{messages.GoBack}" propagation="end"/>
+		</s:div>
+		<h:form id="userPropertiesForm">
+		<rich:tabPanel switchType="client">
+			<rich:tab label="#{messages['User.UserProperties']}">
+    			
+    			<p><strong>#{messages.Email}:</strong> #{messages['User.EmailMessage']}</p>
+    			<p>#{messages.UserDeleteAccount} <span> <s:link view="/deleteaccount.xhtml" value="#{messages.UserDeleteAccountHere}"/></span>.</p>
+    			<s:decorate template="/layout/edit.xhtml">	
+    				<ui:define name="label">#{messages.FirstName}</ui:define>
+    				<h:inputText value="#{user.firstName}"/>
+    			</s:decorate>
+	
+				<s:decorate template="/layout/edit.xhtml">
+					<ui:define name="label">#{messages.LastName}</ui:define>
+					<h:inputText value="#{user.lastName}" />
+				</s:decorate>
+				
+				<s:decorate template="/layout/view.xhtml">
+					<ui:define name="label">#{messages.Password}</ui:define>
+					<h:inputSecret value="Nice Try But No Cigar" readonly="true" redisplay="true"/>
+					<h:commandLink value="#{messages.Change}" action="#{userAction.passwordChange}" />
+				</s:decorate>
+				
+				<s:decorate template="/layout/edit.xhtml">
+					<ui:define name="label">#{messages.Email}</ui:define>
+					<h:inputText value="#{user.email}" />
+				</s:decorate>
+				
+				<s:decorate template="/layout/view.xhtml">
+					<ui:define name="label">#{messages['User.ApiCode']}</ui:define>
+					<h:outputText value="#{user.apiCode}"/>
+					<h:commandLink value="#{messages['User.ChangeAPICode']}" action="#{userAction.changeAPICode}"/>					
+				</s:decorate>
+				
+				<s:decorate template="/layout/view.xhtml">
+					<ui:define name="label">#{messages.DateCreated}</ui:define>
+					<h:outputText value="#{user.dateCreated}">
+						<s:convertDateTime type="both" dateStyle="medium" timeZone="#{timeZone}"/>
+					</h:outputText>
+				</s:decorate>
+				
+				<s:decorate template="/layout/view.xhtml">
+					<ui:define name="label">#{messages.DateModified}</ui:define>
+					<h:outputText value="#{user.dateModified}">
+						<s:convertDateTime type="both" dateStyle="medium" timeZone="#{timeZone}"/>
+					</h:outputText>
+				</s:decorate>
+	    		<div style="clear:both;"></div>
+			</rich:tab>
+			
+		<rich:tab label="#{messages.LocaleSettings}">
+    			<s:decorate template="/layout/edit.xhtml">
+    				<ui:define name="label">#{messages.TimeZone}</ui:define>
+    				<h:selectOneMenu value="#{user.userProperties.preferredTimeZoneId}" valueChangeListener="#{timeZoneSelector.select}">
+    					<s:selectItems var="curTimeZone" value="#{availableTimeZones}" label="#{curTimeZone}"/>
+    				</h:selectOneMenu>
+    			</s:decorate>
+    			
+    			<s:decorate template="/layout/edit.xhtml">
+    				<ui:define name="label">#{messages.Language}</ui:define>
+    				<h:selectOneMenu value="#{user.userProperties.preferredLanguageCode}" valueChangeListener="#{localeSelector.select}">
+    					<f:selectItems value="#{localeSelector.supportedLocales}"></f:selectItems>
+    				</h:selectOneMenu>
+    			</s:decorate>
+    			<div style="clear:both;"></div>
+			</rich:tab>
+		
+		
+		</rich:tabPanel>
+		<h:commandButton value="#{messages['User.SaveChanges']}" action="#{userAction.update}"/>
+	</h:form>
+		
+    	
+    	
+    </ui:define>
+    
+</ui:composition>

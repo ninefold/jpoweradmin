@@ -1,0 +1,37 @@
+<ui:composition  xmlns="http://www.w3.org/1999/xhtml"
+                 xmlns:ui="http://java.sun.com/jsf/facelets"
+                 xmlns:h="http://java.sun.com/jsf/html"
+                 xmlns:f="http://java.sun.com/jsf/core"
+                 xmlns:s="http://jboss.com/products/seam/taglib">
+                 
+             <s:decorate template="/layout/edit.xhtml">
+				<ui:define name="label">#{messages.FirstName}</ui:define>
+				<h:inputText id="firstNameField" value="#{user.firstName}" required="false" />
+			</s:decorate>
+
+			<s:decorate template="/layout/edit.xhtml">
+				<ui:define name="label">#{messages.LastName}</ui:define>
+				<h:inputText id="lastNameField" value="#{user.lastName}" required="false" />
+			</s:decorate>
+			
+			<s:decorate template="/layout/edit.xhtml">
+				<ui:define name="label">#{messages.UserName}</ui:define>
+				<h:inputText id="userNameField" value="#{user.userName}" required="true"/>
+			</s:decorate>
+			
+			<s:decorate  template="/layout/edit.xhtml" rendered="#{!identity.loggedIn}">
+				<ui:define name="label">#{messages.Password}</ui:define>
+				<h:inputSecret id="passwordField" value="#{passwordChecker.password}" required="true" redisplay="true"/>
+			</s:decorate>
+			
+			<s:decorate  template="/layout/edit.xhtml" rendered="#{!identity.loggedIn}">
+				<ui:define name="label">#{messages.ConfirmPassword}</ui:define>
+				<h:inputSecret id="confirmPasswordField" value="#{passwordChecker.confirmPassword}" required="true" redisplay="true"/>
+			</s:decorate>
+			
+			<s:decorate template="/layout/edit.xhtml">
+				<ui:define name="label">#{messages.Email}</ui:define>
+				<h:inputText id="emailAddressField" value="#{user.email}"/>
+			</s:decorate>
+			                 
+</ui:composition>

@@ -1,0 +1,638 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+	
+	<h1>JPower Admin API</h1>
+	
+	<h2>Overview</h2>
+	
+	<p>JPower Admin provides RESTful web-services API allowing for full control 
+	over zones managed by it. By using the API one can integrate all functionality
+	of JPower Admin with third party systems.</p>
+	
+	<h2>The API Key</h2>
+
+		<p>Each account with JPower Admin  gets assigned an API key. The API
+		key is used to uniquely identify an account. Any requests to the web
+		services must include the account's api key. Therefore, it is very
+		important to protect the API key against unauthorized disclosure. <strong>Anyone
+		with access to your API key can control all aspects of your account.</strong>
+		For this reason, it is <strong>strongly</strong> recommended to secure the site running 
+		the JPower Admin with SSL.</p>
+
+		<p>The API key for the account get be accessed by signing in,
+		going to &#8220;Account Properties&#8221; and viewing the &#8220;User
+		Properties&#8221; tab</p>
+
+		<div class="image">
+		<h:graphicImage alt="API Key" value="/img/api-key.png"/>
+		<div class="caption">Figure 1: API Key</div>
+	</div>
+	
+	<p>The &#8220;Generate New&#8221; link can be used to generate a new API key.</p>
+	
+	<h2>Using the API</h2>
+
+		<p>Every request to our web-services URLs <strong>must</strong>
+		include the custom HTTP header <strong>X-JPowerAdmin-API-Key</strong>
+		set to the API key for the user's account.</p>
+
+		<h3>Get the account properties</h3>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/user</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="1">Returns</td>
+			<td colspan="2">200 &amp; application/xml</td>
+		</tr>
+	</table>
+
+	<p>The web-service returns xml markup representing the user properties.</p>
+	
+	<p>Typical response (formatted for readability).</p>
+
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;user&gt;
+   &lt;firstName&gt;John&lt;/firstName&gt;
+   &lt;lastName&gt;Smith&lt;/lastName&gt;
+   &lt;userName&gt;jsmith&lt;/userName&gt;
+   &lt;password&gt;39ce7e2a8573b41ce73b5ba41617f8f7&lt;/password&gt;
+   &lt;email&gt;jsmith@example.com&lt;/email&gt;
+   &lt;dateCreated&gt;2010-07-29T16:14:05-06:00&lt;/dateCreated&gt;
+   &lt;dateModified&gt;2010-07-30T10:56:10-06:00&lt;/dateModified&gt;
+&lt;/user&gt;
+	</div>
+
+	<p>The <strong>email</strong> tag in the user properties is the
+	email address where forgotten password links are sent to. <strong>If
+	you do not provide an email address, you will not be able to reset
+	your password.</strong>.</p>
+
+	
+	<p>The password tag shows the one-way hashed password for the account.</p>
+	
+	<h3>Updating account properties</h3>
+	
+	<p>To update the account properties, submit the XML representation of the user
+	to the web service URL below.
+	 </p>
+	 
+	 <table class="api">
+	 	<tr>
+	 		<td>URL</td>
+	 		<td>http://&lt;your site&gt;/seam/resource/restv2/user</td>
+	 	</tr>
+	 	<tr>
+	 		<td>Method</td>
+	 		<td>PUT</td>
+	 	</tr>
+	 	<tr>
+	 		<td>Request Body</td>
+	 		<td>XML (application/xml) representing user to update</td>
+	 	</tr>
+	 	<tr>
+	 		<td rowspan="3">Returns</td>
+	 	</tr>
+	 	<tr>
+	 		<td colspan="2">200 OK</td>
+	 	</tr>
+	 	<tr>
+	 		<td colspan="2">400 Bad Request on invalid XML</td>
+	 	</tr>
+	 </table>
+	
+	<p>Typical xml request (formatted for readability).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;user&gt;
+   &lt;firstName&gt;John&lt;/firstName&gt;
+   &lt;lastName&gt;Smith&lt;/lastName&gt;
+   &lt;userName&gt;jsmith&lt;/userName&gt;
+   &lt;password&gt;newpassword&lt;/password&gt;
+   &lt;email&gt;jsmith@example.net&lt;/email&gt;
+&lt;/user&gt;
+	</div>
+	
+	<p>To change the password, put the new password in plaintext in the 
+	<strong>password</strong> tag. The password will be then hashed by the server.</p>
+	
+	<p>Please note that the <strong>user name</strong>, <strong>date created</strong> and <strong>date modified</strong> properties cannot be changed.</p>
+
+	<h3>Zones</h3>
+	
+	<p>To get a listing of all zones for a given account, use the following URL</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zones</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="2">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK &amp; application/xml representing all zones</td>
+		</tr>
+	</table>
+	
+	<p>Typical output (formatted for readability).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;collection&gt;
+   &lt;domain&gt;
+      &lt;name&gt;example.com&lt;/name&gt;
+      &lt;type&gt;MASTER&lt;/type&gt;
+      &lt;master&gt;&lt;/master&gt;
+      &lt;notifiedSerial&gt;0&lt;/notifiedSerial&gt;
+      &lt;dateCreated&gt;2010-07-29T16:14:16-06:00&lt;/dateCreated&gt;
+      &lt;dateModified&gt;2010-07-29T16:14:41-06:00&lt;/dateModified&gt;
+   &lt;/domain&gt;
+   &lt;domain&gt;
+      &lt;name&gt;example.bg&lt;/name&gt;
+      &lt;type&gt;MASTER&lt;/type&gt;
+      &lt;master&gt;&lt;/master&gt;
+      &lt;notifiedSerial&gt;0&lt;/notifiedSerial&gt;
+      &lt;dateCreated&gt;2010-07-29T16:14:21-06:00&lt;/dateCreated&gt;
+      &lt;dateModified&gt;2010-07-29T16:14:41-06:00&lt;/dateModified&gt;
+   &lt;/domain&gt;
+&lt;/collection&gt;
+	</div>
+
+	<h3>Individual zone details</h3>
+	
+	<p>Zones are uniquely identified by name. One can get the zone details by querying the following URL</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK &amp; application/xml representing zone</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<p>Typical output (formatted for readability)</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;domain&gt;
+   &lt;dateCreated&gt;2010-11-16T18:35:04-06:00&lt;/dateCreated&gt;
+   &lt;dateModified&gt;2010-11-18T22:43:12-06:00&lt;/dateModified&gt;
+   &lt;parentZoneName&gt;example.com&lt;/parentZoneName&gt;
+   &lt;name&gt;example.net&lt;/name&gt;
+   &lt;type&gt;MASTER&lt;/type&gt;
+   &lt;master&gt;&lt;/master&gt;
+   &lt;notifiedSerial&gt;0&lt;/notifiedSerial&gt;
+&lt;/domain&gt;	</div>	
+	
+	<p>The <strong>master</strong> tag indicates the IP address of the master 
+	DNS server in case this is a slave zone as indicated by the <strong>type</strong> tag. 
+	</p>
+	
+	<p>The <strong>parentZoneName</strong> tag indicates that zone this zone is linked to. Linked zones 
+	are controlled by the parent zone indicated by this tag. Changes made to the parent zone are all 
+	reflected in the linked (child) zones.</p>
+	
+	<h3>Editing a zone</h3>
+	
+	<p>Edits to zones are performed by submitting the XML zone representation to the web 
+	services URL.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>PUT</td>
+		</tr>
+		<tr>
+			<td>Request body</td>
+			<td>XML (application/xml) markup identifying the zone to edit</td>
+		</tr>
+		<tr>
+			<td rowspan="4">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">400 Bad Request on invalid XML</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<p>Typical request body (formatted for readability).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;domain&gt;
+   &lt;name&gt;example.com&lt;/name&gt;
+   &lt;type&gt;MASTER&lt;/type&gt;
+   &lt;master&gt;&lt;/master&gt;
+   &lt;notifiedSerial&gt;0&lt;/notifiedSerial&gt;
+&lt;/domain&gt;		
+	</div>
+	
+	<h3>Creating a zone</h3>
+	
+	<p>To create a zone use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>POST</td>
+		</tr>
+		<tr>
+			<td>Request body</td>
+			<td>XML (application/xml) markup of a zone</td>
+		</tr>
+		<tr>
+			<td rowspan="4">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">400 Bad Request on invalid XML</td>
+		</tr>
+		<tr>
+			<td colspan="2">409 Conflict</td>
+		</tr>
+	</table>
+	
+	<p>Typical request body (formatted for readability).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;domain&gt;
+   &lt;name&gt;example.co.za&lt;/name&gt;
+   &lt;type&gt;MASTER&lt;/type&gt;
+&lt;/domain&gt;	
+	</div>
+	
+	<h3>Deleting a zone</h3>
+	
+	<p>To delete a zone use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>DELETE</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<p><strong>Note:</strong> When deleting a zone, all associated records are deleted as well.</p>
+	
+	<h3>Linking Zones</h3>
+	
+	<p>One can "symlink" zones to a parent zone. Changes to the parent zone are all reflected in the 
+	linked (child) zones. You cannot create, edit or delete records in the linked zone.</p>
+	
+	<p>To create the "symlink" between zones, submit the following XML markup to the resource below:</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;linkRequest&gt;
+   &lt;parent&gt;example.com&lt;/parent&gt;
+   &lt;child&gt;example.org&lt;/child&gt;
+   &lt;action&gt;LINK&lt;/action&gt;
+&lt;/linkRequest&gt;	
+	</div>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/link</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>PUT</td>
+		</tr>
+		<tr>
+			<td rowspan="4">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">400 Bad Request on invalid XML</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">409 Conflict</td>
+		</tr>
+	</table>
+	
+	<p>To unlink, submit the request with <strong>action</strong> tag set to UNLINK</p>
+	
+	<h3>Listing linked zones for a given parent</h3>
+	
+	<p>To list all linked zones for a given parent zone use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]/children</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK &amp; XML (application/xml) representation of the zone records</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<h3>Listing the zone records</h3>
+	
+	<p>Zone records can be listed for by requesting the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]/records</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK &amp; XML (application/xml) representation of the zone records</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<p>Typical output (formatted for readiblitly).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;collection&gt;
+   &lt;record&gt;
+      &lt;id&gt;64&lt;/id&gt;
+      &lt;name&gt;example.com&lt;/name&gt;
+      &lt;type&gt;SOA&lt;/type&gt;
+      &lt;content&gt;ns1.nicmus.com hostmaster.example.com 1 10800 3600 604800 3600&lt;/content&gt;
+      &lt;prio&gt;0&lt;/prio&gt;
+      &lt;ttl&gt;3600&lt;/ttl&gt;
+      &lt;change_date&gt;1280963926277&lt;/change_date&gt;
+      &lt;dateCreated&gt;2010-07-29T16:14:16-06:00&lt;/dateCreated&gt;
+      &lt;dateModified&gt;2010-08-04T17:18:46-06:00&lt;/dateModified&gt;
+   &lt;/record&gt;
+   &lt;record&gt;
+      &lt;id&gt;65&lt;/id&gt;
+      &lt;name&gt;example.com&lt;/name&gt;
+      &lt;type&gt;NS&lt;/type&gt;
+      &lt;content&gt;ns1.nicmus.com&lt;/content&gt;
+      &lt;prio&gt;0&lt;/prio&gt;
+      &lt;ttl&gt;3600&lt;/ttl&gt;
+      &lt;change_date&gt;1280441656529&lt;/change_date&gt;
+      &lt;dateCreated&gt;2010-07-29T16:14:16-06:00&lt;/dateCreated&gt;
+      &lt;dateModified&gt;2010-07-29T16:14:16-06:00&lt;/dateModified&gt;
+    &lt;/record&gt;
+    &lt;record&gt;
+       &lt;id&gt;66&lt;/id&gt;
+       &lt;name&gt;example.com&lt;/name&gt;
+       &lt;type&gt;NS&lt;/type&gt;
+       &lt;content&gt;ns2.nicmus.com&lt;/content&gt;
+       &lt;prio&gt;0&lt;/prio&gt;
+       &lt;ttl&gt;3600&lt;/ttl&gt;
+       &lt;change_date&gt;1280441656530&lt;/change_date&gt;
+       &lt;dateCreated&gt;2010-07-29T16:14:16-06:00&lt;/dateCreated&gt;
+       &lt;dateModified&gt;2010-07-29T16:14:16-06:00&lt;/dateModified&gt;
+    &lt;/record&gt;
+    &lt;record&gt;
+       &lt;id&gt;80&lt;/id&gt;
+       &lt;name&gt;www.example.com&lt;/name&gt;
+       &lt;type&gt;A&lt;/type&gt;
+       &lt;content&gt;173.203.79.71&lt;/content&gt;
+       &lt;prio&gt;0&lt;/prio&gt;
+       &lt;ttl&gt;3600&lt;/ttl&gt;
+       &lt;change_date&gt;1280963926250&lt;/change_date&gt;
+       &lt;dateCreated&gt;2010-08-04T17:18:46-06:00&lt;/dateCreated&gt;
+       &lt;dateModified&gt;2010-08-04T17:18:46-06:00&lt;/dateModified&gt;
+    &lt;/record&gt;
+&lt;/collection&gt;
+	</div>
+
+	<p>The <strong>name</strong> tag identifies the name of the record - that is the content on the left hand side in the DNS database.</p>
+	<p>The <strong>content</strong> tag identifies what the record point to - that is the content on the right hand side in the DNS database.</p>
+	<p>The <strong>type</strong> tag refers to the DNS record type. </p>
+	<p>The <strong>prio</strong> tag refers to the record priority. Mainly useful for MX records.</p>
+	<p>The <strong>ttl</strong> is the record Time to Live.</p>
+	<p>The <strong>change_date</strong> is the time in milliseconds since the start of the epoch. This value is <strong>automatically</strong> set everytime you update a DNS record.</p>
+	<p>For a complete list of record types and their storage, consult the <a class="external" target="blank" href="http://downloads.powerdns.com/documentation/html/types.html">powerDNS manual</a>.</p>
+	
+	<h3>Listing a zone record</h3>
+	
+	<p>Zone records are uniquely identified by ids. To view the details of a particular record, use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zoneName]/record/[id]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>GET</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK ;amp; application/xml</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	<p>Typcial output (formatted for readibility)</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;record&gt;
+   &lt;id&gt;80&lt;/id&gt;
+   &lt;name&gt;www.example.com&lt;/name&gt;
+   &lt;type&gt;A&lt;/type&gt;
+   &lt;content&gt;173.203.79.71&lt;/content&gt;
+   &lt;prio&gt;0&lt;/prio&gt;
+   &lt;ttl&gt;3600&lt;/ttl&gt;
+   &lt;change_date&gt;1280963926250&lt;/change_date&gt;
+   &lt;dateCreated&gt;2010-08-04T17:18:46-06:00&lt;/dateCreated&gt;
+   &lt;dateModified&gt;2010-08-04T17:18:46-06:00&lt;/dateModified&gt;
+&lt;/record&gt;	
+	</div>
+	
+	<h3>Updating a zone record</h3>
+	
+	<p>To edit a zone record, submit the XML representation of the given record to the following URL.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>PUT</td>
+		</tr>
+		<tr>
+			<td>Request body</td>
+			<td>XML (application/xml) identifying zone record to edit</td>
+		</tr>
+		<tr>
+			<td rowspan="5">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">400 Bad Request on invalid XML</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+		<tr>
+			<td colspan="2">409 Record Conflict</td>
+		</tr>
+	</table>
+	
+	<h3>Creating a new record</h3>
+	
+	<p>To create a new record, use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>POST</td>
+		</tr>
+		<tr>
+			<td>Request body</td>
+			<td>XML (application/xml) representation of record</td>
+		</tr>
+		<tr>
+			<td rowspan="5">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK &amp; text/plain - id of record created</td>
+		</tr>
+		<tr>
+			<td colspan="2">400 Bad Request on invalid XML</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+		<tr>
+			<td colspan="2">409 Conflict</td>
+		</tr>
+	</table>
+	
+	<p>Typical request body (formatted for readibility).</p>
+	
+	<div class="code">
+&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;yes&quot;?&gt;
+&lt;record&gt;
+   &lt;name&gt;example.com&lt;/name&gt;
+   &lt;type&gt;MX&lt;/type&gt;
+   &lt;content&gt;mx1.nicmus.com&lt;/content&gt;
+   &lt;prio&gt;1&lt;/prio&gt;
+   &lt;ttl&gt;3600&lt;/ttl&gt;
+&lt;/record&gt;
+	</div>
+	
+	<p>In the example above, an MX record with priority 1  pointing to mx1.nicmus.com is being created for the zone example.com</p>
+	
+	<h3>Deleting a zone record</h3>
+	
+	<p>To delete a zone record, use the following resource.</p>
+	
+	<table class="api">
+		<tr>
+			<td>URL</td>
+			<td>http://&lt;your site&gt;/seam/resource/restv2/zone/[zonename]/record/[id]</td>
+		</tr>
+		<tr>
+			<td>Method</td>
+			<td>DELETE</td>
+		</tr>
+		<tr>
+			<td rowspan="3">Returns</td>
+		</tr>
+		<tr>
+			<td colspan="2">200 OK</td>
+		</tr>
+		<tr>
+			<td colspan="2">404 Not Found</td>
+		</tr>
+	</table>
+	
+	</ui:define>
+
+</ui:composition>

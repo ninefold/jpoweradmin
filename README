@@ -1,0 +1,155 @@
+About
+================================================================================
+JPower Admin is a web application used to manage PowerDNS installations. 
+
+Licensing
+===============================================================================
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+Installation Requirements
+================================================================================
+
+To successfully build and install JPower Admin, you will need the 
+following software:
+
+1. Java 5 or 6 (either OpenJDK or Oracle - JDK 1.5 or 1.6)
+2. JBoss Seam 2.x (JPowerAdmin uses the SEAM freamework)
+3. RESTEasy 2.x.x (Used for the remote management API)
+4. Suitable application server (default config works with Jboss 5.x.x)
+5. Ant version 1.7 or later
+6. Exim MTA (version 4.6 or later) for e-mail forwarding
+
+Building Instruction
+================================================================================
+
+The default configuration of JPower Admin works with Jboss Application Server 
+version 5.x. To use JPowerAdmin out of the box, you will need a properly 
+configured JBoss server version 5.x.
+
+Please note that the default installation of Jboss is *insecure* and it is 
+*your* responsibility to have a properly secured environment if you have 
+JPower Admin running on a publicly accessible server.
+
+To run JPowerAdmin on an application server other than JBoss, you will need to 
+perform minor configuration changes and adjust the ant build script accordingly.
+Refer to:
+
+http://docs.jboss.org/seam/2.2.0.GA/en-US/html/weblogic.html
+http://docs.jboss.org/seam/2.2.0.GA/en-US/html/websphere.html
+http://docs.jboss.org/seam/2.2.0.GA/en-US/html/glassfish.html
+
+for the configuration changes necessary for these servers.
+
+Extract the dependant software to a directory of your choice. 
+
+Open the ant build script "build.xml" and change the following properties:
+
+
+* lib.dir
+* rest-easy-lib.dir
+* jboss-home.dir
+
+lib.dir refers to the "lib" directory of the seam framework.
+
+rest-easy-lib.dir refers to the "lib" directory of RESTEasy.
+
+jboss-home.dir refers to the location of JBOSS.
+
+Assuming the prerequisites are met and the ant build script has been modified 
+to reflect your setup, issue command in the directory with the build.xml file.
+
+~ant ear
+
+If there are no errors outputted, congratulations, you have successfully 
+built JPowerAdmin! You can find the ear archive under the dist directory.
+
+Deployment
+================================================================================
+Before deploying the ear archive, you need to configure the DataSource. Under 
+the "resources" directory, you will find the JPowerAdmin-ds.xml file specifying 
+the database connection properties. The default data source is for HSQL and will 
+work out of the box on JBoss. It is only for testing the actual interface and 
+it will *not* work with PowerDNS. Edit the file accordingly. You will need to 
+change at least the "connection-url" and the "driver-class" properties in the 
+data source configuration. Additionally, you will need to change the 
+"hibernate-dialect" property in the "persistence.xml" file. Examples for 
+MySQL are commented out.
+
+In any case, you *must* have the correct JDBC driver installed for database in 
+question. After the data source is configured correctly, you can install the
+data source by issuing the  following command:
+
+~# ant datasource
+
+To deploy the the ear archive, invoke the "deploy" target.
+
+~# ant deploy  
+
+Navigate to 
+
+http://yourhost:8080/JPowerAdmin
+
+and enjoy the software.
+
+Fancy Record Support
+================================================================================
+PowerDNS supports the so called fancy records that perform e-mail forwarding and 
+URL redirection. To use these features, we need supporting software that 
+performs the URL redirection or the e-mail forwarding.
+
+URL Redirection
+================================================================================
+To use URL redirection, you need to build the URL redirection servlet. 
+
+Navigate to the "JPowerAdmin-URL-Redirection-Servlet" directory under the 
+"fancyrecord" directory. You will need to adjust the following properties in the 
+and build script:
+
+* seam.dir
+* JPowerAdmin.dir
+
+After verifying that the ant build script has the correct properties set, invoke 
+the war target.
+
+~# ant war
+
+The URL redirection servlet is built. You must deploy the resulting ROOT.war 
+archive in a separate IP-based virtual host. Then set the urlredirector config
+option in powerDNS. Please refer to the PowerDNS manual (link below) 
+for more information.
+
+http://downloads.powerdns.com/documentation/html/fancy-records.html
+
+
+E-mail forwarding
+================================================================================
+The email forwarding functionality is provided by the exim MTA. Download and 
+install the exim MTA version 4.6 or later. Use the configuration file provided 
+in the "fancyrecords" directory. 
+
+WARNING: the provided exim4.conf file assumes that your server is securely 
+configured for running an MTA service exposed to the general public.
+
+Contact Us
+================================================================================
+Send any inquires to info@nicmus.com
+
+
+
+
+
+
+
+

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<page xmlns="http://jboss.com/products/seam/pages"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://jboss.com/products/seam/pages http://jboss.com/products/seam/pages-2.2.xsd" login-required="true" conversation-required="true" no-conversation-view-id="/home.xhtml">
+
+      
+      <navigation from-action="#{userAction.delete}">
+      	<rule if-outcome="false">
+      		<redirect view-id="/user.xhtml">
+      			<message severity="INFO">Account not deleted</message>
+      		</redirect>
+      	</rule>
+      	<rule if-outcome="true">
+	      	<end-conversation/>
+	      		<redirect view-id="/home.xhtml"/>
+      	</rule>
+      	</navigation>
+
+</page>

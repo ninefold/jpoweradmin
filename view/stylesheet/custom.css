@@ -1,0 +1,280 @@
+a {
+	color:#0000EE;
+	text-decoration:none;
+}
+
+a:hover {
+	text-decoration:underline;
+}
+
+div.logo {
+	background-image: url(../img/jpoweradmin.png);
+	background-repeat: no-repeat;
+	height: 90px;
+	margin-top: -29px;
+	padding-bottom: 10px;
+}
+
+
+#frame {
+	width: 1020px;
+}
+
+#enclose {
+	float:left;
+	width:1000px;
+}
+
+.featureDiv {
+	float:left;
+}
+
+.loginDiv {
+	float:left;
+	margin-right: 3em;
+}
+
+.backLink {
+	margin-bottom: 1em;
+}
+
+.message li.errormsg, .expired{
+	color: red;
+}
+
+div.expired {
+	border: 1px solid red;
+	padding:10px;
+	text-align:center;
+	margin-top: 10px;
+}
+
+ol {
+	list-style-position: inside;
+}
+
+li {
+	margin-top:5px;
+}
+
+td.infoPanel {
+	vertical-align:top;
+	margin:0px;
+	border-right: 1px dashed #bed6f8;
+	width: 50%;
+}
+
+td.loginPanel {
+	margin:0px;
+	border:none;
+	padding-left:10px;
+	vertical-align:top;
+}
+
+#signupPanel {
+	margin-top:2em;
+}
+
+.signup {
+	text-align:center;
+	padding: 0.5em;
+	font-size: 24px;
+}
+
+div.question, div.support {
+	font-weight:bold;
+}
+
+p.contactPhone, p.contactEmail {
+	background: transparent url(../img/telephone-small.png) no-repeat left center;
+	padding-left: 40px;
+	line-height: 38px;
+	font-weight: bold;
+	font-size: 110%;
+}
+
+p.contactEmail{
+	background: transparent url(../img/email-small.png) no-repeat left center;
+}
+
+div.snailmail {
+	background: transparent url(../img/mail.png) no-repeat left top;
+}
+
+.snailmail div {
+	padding-left: 40px;
+	font-weight: bold;
+	font-size: 110%;
+}
+
+.initcap {
+	font-size: 16px;
+	margin:0;
+	padding:0;
+	padding-right:24px;
+	text-decoration: none;
+}
+
+div.answer {
+	margin-left: 40px;
+	padding:0px;
+}
+
+#shoppingCartId{
+	background: transparent url(../img/cart.png) no-repeat scroll right center;
+	padding-right: 1.5em;
+}
+
+a.external {
+	background:transparent url(../img/external.png) no-repeat scroll right center;
+	padding-right: 1.3em;
+}
+
+a.external-tiny {
+	background:transparent url(../img/external-tiny.png) no-repeat scroll right center;
+	padding-right: 0.9em;
+}
+
+ul.features {
+	list-style:none;
+	margin: 0;
+	padding: 0 0 0 1em;
+	text-ident: -1em;
+}
+
+
+.shoppinglink{
+	font-size: 130%;
+}
+
+blockquote {
+	border: 1px dashed grey;
+	text-align:center;
+	height:3em;
+}
+
+blockquote p {
+	vertical-align:middle;
+}
+
+#companyAddressDiv {
+	padding-top: 2em;
+	float:right;
+}
+
+#invoiceDiv{
+	clear:both;
+	float:left;
+	background-color: black;
+	padding:10px;
+	padding-right:30px;
+	color:white;
+}
+
+
+#nicmusBlock {
+	font-size: 150%;
+}
+
+#invoiceDate {
+	font-size: 80%;
+}
+
+#clientAddressDiv{
+	clear:both;
+	padding-top: 3em;
+	padding-bottom: 3em;
+}
+
+
+#invoiceTable {
+	margin-bottom: 2em;
+}
+
+#invoiceTable th {
+	text-align:right;
+}
+
+#invoiceTable td {
+	text-align:right;
+}
+
+#invoiceTable th.left, #invoiceTable td.left {
+	text-align:left;
+}
+
+
+#invoiceTable .price {
+	text-align: right;
+}
+
+#invoiceTable .price.total {
+	font-weight:bold;
+}
+
+#invoiceTable .heavy {
+	font-weight: bold;
+}
+
+#invoiceTable .invoiceTotal {
+	border-bottom: 1px double;
+}
+
+#paymentInfo {
+	margin-bottom: 2em;
+}
+
+p.progress {
+	background-image: url(../img/progress_bar3.gif);
+	background-position: center bottom;
+	background-repeat: no-repeat;
+	padding-bottom: 2em;
+	margin-left:auto;
+	margin-right:auto;	
+}
+
+.image img {
+	margin-left:auto;
+	margin-right:auto;
+	display:block;
+}
+
+
+
+.image .caption {
+	font-weight: bold;
+	font-size: 70%;
+	margin-left:auto;
+	margin-right:auto;
+	text-align:center;
+}
+
+table.api {
+	border:2px solid #334455;
+	border-collapse:collapse;
+	caption-side:bottom;
+	margin:10px 0;
+}
+
+table.api td {
+	border:1px solid #888899;
+	padding:2px 4px;
+	vertical-align:top;
+}
+
+.code {
+	background:none repeat scroll 0 0 #eeeeff;
+	border:2px solid #7a5ada;
+	color:#333333;
+	font-family:monospace;
+	margin:0px;
+	overflow:auto;
+	padding:10px;
+	white-space:pre;
+}
+
+.zonetooltip {
+	text-align: left;
+	float: right;
+	clear: right;
+}

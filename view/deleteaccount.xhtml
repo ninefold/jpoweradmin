@@ -1,0 +1,38 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+    
+    <ui:define name="body">
+    
+    	<s:div styleClass="backLink">
+        	<s:link view="/user.xhtml" value="&#171; &nbsp; #{messages.GoBackToUser}"/>
+		</s:div>
+    	
+    	<h:form>
+    		<rich:panel>
+    			<f:facet name="header">
+    				<h:outputText value="#{messages.DeleteAccount}" />
+    			</f:facet>
+		        <p><span class="required">*</span> #{messages.Required}</p>
+
+			    	<p>#{messages.DeleteAccountWarning}</p>
+					<p>#{messages.DeleteAccountConfirmMessage}</p>
+
+    			
+    			<s:decorate template="/layout/edit.xhtml">	
+    				<ui:define name="label">#{messages.DeleteAccount}</ui:define>
+    				<h:inputText value="#{user.userProperties.confirmDelete}" required="true"/>
+    			</s:decorate>
+	
+    		<div style="clear:both;"></div>
+    	</rich:panel>
+    	<h:commandButton value="#{messages.Delete}" action="#{userAction.delete}" />
+    	</h:form>
+    </ui:define>
+    
+</ui:composition>

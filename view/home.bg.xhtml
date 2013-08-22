@@ -1,0 +1,47 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+
+	<ui:define name="body">
+		
+	  <h1>Интерфейс за пълен контрол на &bdquo;PowerDNS&ldquo;</h1>
+		<div id="frame">
+			<div id="enclose">
+		    	<s:div rendered="#{!identity.loggedIn}" styleClass="loginDiv">
+					<h:panelGrid columns="1">
+	
+						<ui:include src="/includes/login.xhtml"/>
+	
+						<rich:panel id="signupPanel">
+							<div class="signup">
+								<s:link value="#{messages['Header.Register']}" view="/register.xhtml" propagation="none"/>
+							</div>
+						</rich:panel>
+					</h:panelGrid>
+				 </s:div>
+		
+				<s:div styleClass="featureDiv">
+					<span><strong>Ключови Харектеристики</strong></span> 
+					<ul class="features">
+						<li>&#187; Лесен за използване, чист интерфейс</li>
+						<li>&#187; Поддръжка на всички видове DNS данни</li>
+						<li>&#187; Поддръжка на различни видове база данни</li>
+						<li>&#187; Поддръжка на специални видове данни спесифични за &bdquo;PowerDNS&ldquo;</li>
+						<li>&#187; Локализиране на Български и Английски</li>
+						<li>&#187; <a href="api.html">API</a> за пълен контрол върху областите</li>
+						<li>&#187; Построено на надеждна и доказана технология</li>
+						<li>&#187; Лесно за добавяне на разширения</li>
+					</ul>
+				</s:div>
+			</div>
+		</div>
+	<div style="clear:both"/>
+		
+	</ui:define>
+
+</ui:composition>
