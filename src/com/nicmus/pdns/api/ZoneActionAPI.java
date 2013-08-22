@@ -323,9 +323,9 @@ public class ZoneActionAPI {
 		}
 		
 		//create the record
-		if(!record.getName().toLowerCase().endsWith(domain.getName().toLowerCase())){
-			record.setName(record.getName().concat("." + domain.getName()));
-		}
+		// if(!record.getName().toLowerCase().endsWith(domain.getName().toLowerCase())){
+		// 	record.setName(record.getName().concat("." + domain.getName()));
+		// }
 		
 		Set<Record> records = domain.getRecords();
 		//verify the record
