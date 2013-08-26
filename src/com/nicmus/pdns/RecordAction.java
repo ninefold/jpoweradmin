@@ -12,12 +12,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software Foundation,
  * Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301  USA
- * 
+ *
  * Control panel for PowerDNS (http://powerdns.com)
  * Copyright (C) 2010 nicmus inc.
  * Jivko Sabev (jivko.sabev@gmail.com) jsabev@nicmus.com
- * 
- * @author jsabev 
+ *
+ * @author jsabev
  */
 package com.nicmus.pdns;
 
@@ -52,26 +52,26 @@ import com.nicmus.pdns.entities.Record;
 @Scope(ScopeType.CONVERSATION)
 public class RecordAction implements Serializable {
 	private static final long serialVersionUID = -6117102355127159628L;
-	
+
 	@Logger
 	private Log logger;
-	
+
 	@In(create=true)
 	@Out(required=false)
 	private RecordDataModel recordDataModel;
 
 	@In(required=true)
 	private Domain domain;
-	
+
 	@In(create=true)
 	private RecordDAO recordDAO;
-	
+
 	@In(create=true)
 	private DNSValidator dnsValidator;
-	
+
 	@In(create=true)
 	private FacesMessages facesMessages;
-	
+
 	/**
 	 * Add the given record to the list of records for the zone
 	 * @param record
@@ -79,20 +79,20 @@ public class RecordAction implements Serializable {
 	public void addRecord(Record record){
 		//lowercase the record
 		record.setName(record.getName().toLowerCase().trim());
-		
+
 		//add the domain name if necessary
 		if(record.getName() == null || record.getName().isEmpty()){
 			record.setName(this.domain.getName());
 		}
 		//add the domain suffix, if necessary
-		if(!record.getName().toLowerCase().endsWith(this.domain.getName())){
-			record.setName(record.getName().concat(".").concat(this.domain.getName()));
-		}
+		//if(!record.getName().toLowerCase().endsWith(this.domain.getName())){
+		//	record.setName(record.getName().concat(".").concat(this.domain.getName()));
+		//}
 
 		if(!this.dnsValidator.isValid(record, this.domain.getId())){
 			return;
 		}
-		
+
 		//add the record
 		this.recordDAO.createRecord(record, this.domain.getId());
 		this.recordDAO.incrementSOASerial(this.domain.getId());
@@ -102,7 +102,7 @@ public class RecordAction implements Serializable {
 		this.facesMessages.addFromResourceBundle(Severity.INFO, "RecordAction.RecordAdded", record);
 		record = (Record) Component.getInstance("newRecord", ScopeType.STATELESS);
 	}
-	
+
 	/**
 	 * Navigate to the record edit page
 	 * @param record the record to edit
@@ -112,7 +112,7 @@ public class RecordAction implements Serializable {
 		Contexts.getConversationContext().set("selectedRecord", record);
 		return "/record.xhtml";
 	}
-	
+
 	/**
 	 * Edit the Start of Authority record
 	 * @param record
@@ -128,7 +128,7 @@ public class RecordAction implements Serializable {
 		if(soaFields.length != 7){
 			throw new JPowerAdminException("BAD SOA format. Expected 7 fields. Found " + soaFields.length);
 		}
-	
+
 		SOARecord soaRecord = new SOARecord();
 		soaRecord.setPrimary(soaFields[0]);
 		soaRecord.setHostmaster(soaFields[1]);
@@ -148,7 +148,7 @@ public class RecordAction implements Serializable {
 			e.printStackTrace();
 		}
 		try {
-			soaRecord.setExpire(Integer.parseInt(soaFields[5]));	
+			soaRecord.setExpire(Integer.parseInt(soaFields[5]));
 		} catch (NumberFormatException e){
 			e.printStackTrace();
 		}
@@ -171,21 +171,21 @@ public class RecordAction implements Serializable {
 		if(!this.dnsValidator.isValid(record, this.domain.getId())){
 			return null;
 		}
-		
+
 		this.recordDataModel.update(record);
 		this.recordDAO.incrementSOASerial(domain.getId());
 		this.facesMessages.addFromResourceBundle(Severity.INFO, "RecordAction.RecordUpdated", record);
 		return "/records.xhtml";
 	}
-	
+
 	/**
 	 * Cancel any edits to the given record
-	 * @param record the record whose edit to cancel 
+	 * @param record the record whose edit to cancel
 	 * @return the view of the records form
 	 */
 	public String cancelEdit(Record record){
 		this.recordDataModel.refresh(record);
-		this.facesMessages.addFromResourceBundle(Severity.INFO, "RecordAction.EditCancelled", record);			
+		this.facesMessages.addFromResourceBundle(Severity.INFO, "RecordAction.EditCancelled", record);
 		return "/records.xhtml";
 	}
 
@@ -200,7 +200,7 @@ public class RecordAction implements Serializable {
 		this.facesMessages.addFromResourceBundle(Severity.INFO, "RecordAction.SOAUpdated");
 		return "/records.xhtml";
 	}
-	
+
 	/**
 	 * Delete the selected records
 	 */
@@ -219,5 +219,5 @@ public class RecordAction implements Serializable {
 		this.recordDAO.incrementSOASerial(this.domain.getId());
 	}
 
-	
+
 }
