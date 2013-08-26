@@ -1,0 +1,45 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:s="http://jboss.com/products/seam/taglib"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:rich="http://richfaces.org/rich" template="layout/template.xhtml">
+	<ui:define name="body">
+
+	
+        <h1>A full featured and easy to use web control panel for PowerDNS</h1>
+
+		<div id="frame">
+			<div id="enclose">
+				<s:div rendered="#{!identity.loggedIn}" styleClass="loginDiv">
+					<h:panelGrid columns="1">
+					
+						<ui:include src="/includes/login.xhtml" />
+					
+						<rich:panel id="signupPanel">
+							<div class="signup"><s:link value="#{messages['Header.Register']}" view="/register.xhtml" propagation="none" /></div>
+						</rich:panel>
+					</h:panelGrid>
+				</s:div>
+		
+				<s:div styleClass="featureDiv">
+					<span><strong>Feature List</strong></span>
+					<ul class="features">
+						<li>&#187; Easy to use, clean interface</li>
+						<li>&#187; Supports all features of PowerDNS</li>
+						<li>&#187; Support for different PowerDNS database backends</li>
+						<li>&#187; Scalable interface - support for unlimited number of records</li>
+						<li>&#187; Internationalised and localised in English and Bulgarian</li>
+						<li>&#187; Support for PowerDNS fancy records through additional software</li>
+						<li>&#187; Restful <a href="api.html">API</a> for full control over zones</li>
+						<li>&#187; Built on an enterprise platform</li>
+						<li>&#187; Easily extendible</li>
+					</ul>
+				</s:div>
+			</div> <!-- end of the enclose div -->
+		</div> <!-- end of frame div -->
+		<div style="clear: both" />
+	</ui:define>
+</ui:composition>

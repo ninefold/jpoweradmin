@@ -1,0 +1,224 @@
+<?xml version="1.0" ?>
+<project name="JPowerAdmin" default="deploy">
+
+	<tstamp />
+	<!--Common properties-->
+	
+	<!-- Names -->
+	<property name="Name" value="JPower Admin control panel on JBOSS SEAM" />
+	<property name="project.name" value="JPowerAdmin" />
+	<property name="datasource" value="JPowerAdmin-ds.xml" />
+	<property name="debug" value="false"/>
+
+	<!--Source Directories-->
+	<property name="src.dir" value="./src"/>
+	<property name="view.dir" value="./view" />	
+	<property name="resources.dir" value="./resources"/> 
+
+
+	<!--Target Directories-->
+	<property name="build.dir" value="./build" />
+	<property name="dist.dir" value="./dist" />
+	<property name="exploded-archives.dir" value="./exploded-archives"/>
+	<property name="ear.name" value="${dist.dir}/${project.name}.ear" />
+	<property name="jar.name" value="${build.dir}/${project.name}.jar" />
+	<property name="war.name" value="${build.dir}/${project.name}.war" />
+
+		
+	<!--Libraries-->
+	<property name="lib.dir" value="/home/jsabev/bin/jboss-seam-2.2.2.Final/lib"/>
+	<!--Rest easy integration -->
+	<property name="rest-easy-lib.dir" value="/home/jsabev/bin/resteasy-jaxrs-2.0.0.GA/lib"/>
+
+	<!--Deployment Directories-->
+	<property name="jboss-home.dir" value="/home/jsabev/bin/jboss-6.0.0.Final"/>
+	<property name="deploy.dir" value="${jboss-home.dir}/server/default/deploy"/>
+	
+	<!--SEAM JARS AND REQUIRED DEPENDENCIES-->
+	<!--Seam Core-->
+	<fileset id="seam.jar" dir="${lib.dir}">
+		<include name="jboss-seam.jar"/>
+	</fileset>
+
+	<!--Seam tag library - seam ui with dependencies -->
+	<fileset id="seam.ui.jar" dir="${lib.dir}">
+		<include name="jboss-seam-ui.jar"/>
+		<include name="commons-beanutils.jar"/>
+	</fileset>
+
+	<fileset id="seam.mail.jar" dir="${lib.dir}">
+		<include name="jboss-seam-mail.jar"/>
+	</fileset>
+
+	<!-- Jboss EL -->
+	<fileset id="jboss-el.jar" dir="${lib.dir}">
+		<include name="jboss-el.jar" />
+	</fileset>
+
+	<!-- Facelets dependencies-->
+	<fileset id="facelets.jar" dir="${lib.dir}">
+		<include name="jsf-facelets.jar" />
+	</fileset>
+
+	<!-- RichFaces dependencies -->
+	<fileset id="richfaces-api.jar" dir="${lib.dir}">
+		<include name="richfaces-api.jar" />
+		<include name="commons-beanutils.jar" />
+		<include name="commons-digester.jar" />
+	</fileset>
+
+	<fileset id="richfaces-impl.jar" dir="${lib.dir}">
+		<include name="richfaces-impl.jar"/>
+		<include name="richfaces-ui.jar" />
+	</fileset>
+
+	<!--Rest easy integration-->
+	<fileset id="seam-rest-easy" dir="${lib.dir}">
+		<include name="jboss-seam-resteasy.jar"/>
+	</fileset>
+
+	<!--Rest easy jars-->
+	<fileset id="rest-easy-jars" dir="${rest-easy-lib.dir}">
+		<include name="jaxrs-api-2.0.0.GA.jar" />
+		<include name="jaxb-api-2.1.jar"/>
+		<include name="jaxb-impl-2.1.12.jar"/>
+		<include name="resteasy-jaxrs-2.0.0.GA.jar"/>
+		<include name="resteasy-jaxb-provider-2.0.0.GA.jar" />
+	</fileset>
+
+	<!-- Define what goes in the war file/jar file/ear files-->
+
+	<fileset id="war.view" dir="${view.dir}">
+		<include name="**/*"/>
+	</fileset>
+
+	<fileset id="war.resources" dir="${resources.dir}">
+		<include name="WEB-INF/*.xml" />
+		<include name="WEB-INF/*.sql" />
+	</fileset>
+
+	<!-- put the Localised view handler in the war -->
+	<fileset id="war.localizedViewHandler" dir="${build.dir}/classes">
+		<include name="**/LocalisedViewHandler.class" />
+	</fileset>
+
+	<!-- Stuff that goes into the jar-->
+	<fileset id="jar.resources" dir="${resources.dir}">
+		<include name="import.sql" />
+		<include name="seam.properties" />
+		<include name="META-INF/persistence.xml" />
+		<include name="META-INF/ejb-jar.xml" />
+	</fileset>
+	
+	<!-- Stuff that goes into the ear -->
+	<fileset id="ear.resources" dir="${resources.dir}">
+		<include name="META-INF/jboss-app.xml" />
+		<include name="META-INF/application.xml" />				
+	</fileset>
+
+	<!-- Property resources - themes/internatiolization, etc to be put on 
+	     the class path -->
+	<fileset id="war.classes.resources" dir="${resources.dir}">
+		<exclude name="seam.properties" />
+		<exclude name="components.properties" />
+		<include name="*.properties"/>
+	</fileset>
+
+	<!-- Build classpath -->
+	<path id="build.classpath">
+		<fileset dir="${lib.dir}">
+			<include name="*.jar" />
+			<exclude name="jboss-seam-debug.jar" />
+		</fileset>
+		<fileset refid="rest-easy-jars"/>
+	</path>
+	
+	<target name="init">
+		<tstamp/>
+		<mkdir dir="${build.dir}/classes" />
+		<mkdir dir="${dist.dir}" />
+	</target>
+
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}"/>
+		<delete dir="${dist.dir}" />
+	</target>
+
+	<!--Compile the source -->
+	<target name="compile" depends="init">
+		<javac classpathref="build.classpath" destdir="${build.dir}/classes" debug="off">
+			<src path="${src.dir}" />
+		</javac>
+	</target>
+
+	<!-- Build the ejb project jar -->
+	<target name="jar" depends="compile">
+		<jar destfile="${jar.name}" basedir="${build.dir}/classes">
+			<fileset refid="jar.resources" />
+		</jar>
+	</target>
+
+	<!--Build the ejb project war-->
+	<target name="war" depends="init,compile" >
+		<mkdir dir="${build.dir}/tmp/war/resources" />
+		<copy todir="${build.dir}/tmp/war/resources">
+			<fileset refid="war.resources" />
+			<filterset>
+				<filter token="debug" value="${debug}" />
+				<filter token="ProjectName" value="${project.name}"/>
+				<filter token="jndiPattern" value="${project.name}/#{ejbName}/local" />
+			</filterset>
+		</copy>
+		<jar destfile="${war.name}">
+			<zipfileset refid="war.view"/>
+			<zipfileset refid="seam.mail.jar" prefix="WEB-INF/lib" />
+			<zipfileset refid="seam.ui.jar" prefix="WEB-INF/lib"  />
+			<zipfileset refid="facelets.jar" prefix="WEB-INF/lib" />
+			<zipfileset refid="richfaces-impl.jar" prefix="WEB-INF/lib" />
+			<zipfileset refid="war.classes.resources" prefix="WEB-INF/classes" />
+			<zipfileset refid="war.localizedViewHandler" prefix="WEB-INF/classes"/>
+			<fileset dir="${build.dir}/tmp/war/resources" />
+		</jar>
+	</target>
+
+	<!-- Build the ear file -->
+	<target name="ear" depends="jar,war,init">
+		<mkdir dir="${build.dir}/tmp/ear/resources" />
+		<copy todir="${build.dir}/tmp/ear/resources">
+			<fileset refid="ear.resources"/>
+			<filterset>
+				<filter token="ProjectName" value="${project.name}"/>
+			</filterset>
+		</copy>
+		<jar destfile="${ear.name}" >
+			<fileset refid="seam.jar" />
+			<fileset dir="${build.dir}/tmp/ear/resources"/>
+			<zipfileset refid="rest-easy-jars" prefix="lib"/>
+			<zipfileset refid="seam-rest-easy" prefix="lib"/>
+			<zipfileset refid="richfaces-api.jar" prefix="lib" />
+			<zipfileset refid="jboss-el.jar" prefix="lib"/>
+			<fileset dir="${build.dir}">
+				<include name="${project.name}.jar"/>
+				<include name="${project.name}.war"/>
+			</fileset>
+		</jar>
+	</target>	
+
+
+	<!--Deploy the data source -->
+	<target name="datasource">
+		<fail unless="jboss-home.dir">jboss-home.dir not set</fail>
+		<copy todir="${deploy.dir}" file="${resources.dir}/${datasource}"/>
+	</target>
+
+	<target name="deploy" depends="ear,datasource">
+		<fail unless="jboss-home.dir">jboss-home.dir not set</fail>
+		<copy todir="${deploy.dir}" file="${ear.name}" />
+	</target>
+
+	<target name="undeploy">
+		<delete file="${deploy.dir}/${project.name}.ear" failonerror="no" />
+		<delete file="${deploy.dir}/${datasource}" failonerror="no"/>
+	</target>
+
+</project>

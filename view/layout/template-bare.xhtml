@@ -1,0 +1,46 @@
+<f:view xmlns="http://www.w3.org/1999/xhtml"
+   xmlns:ui="http://java.sun.com/jsf/facelets"
+   xmlns:f="http://java.sun.com/jsf/core"
+   xmlns:h="http://java.sun.com/jsf/html"
+   xmlns:a="http://richfaces.org/a4j"
+   xmlns:s="http://jboss.com/products/seam/taglib"
+   xmlns:rich="http://richfaces.org/rich"
+   contentType="text/html">
+<html>
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+      <meta name="author" content="nicmus inc."/>
+      <meta name="copyright" content="2010, nicmus inc"/>
+      <meta name="description" content="Custom DNS hosting without the limits, ДНС хостинг без изкуствени ограничения"/>
+      <meta name="keywords" content="DNS hosting, web redirects, email redirects, ДНС хостинг, емайл препращане, URL препращане" />
+      <title>Custom DNS</title>
+      <link rel="shortcut icon" href="#{request.contextPath}/img/favicon.png"/>
+      <a:loadStyle src="resource:///stylesheet/theme.xcss"/>
+      <a:loadStyle src="/stylesheet/theme.css"/>
+      <a:loadStyle src="/stylesheet/custom.css"/>
+   </head>
+   <body>
+
+      <div class="body">
+      	 <div class="logo"></div>
+         <ui:insert name="body"/>
+      </div>
+      
+      <div class="footer">
+		 <p><span>#{messages['Footer.ServicesProviedBy']}. &#169;  2010</span></p> 
+         <s:fragment rendered="#{init.debug}">
+         <a:log hotkey="D"/>
+         <p style="margin-top: 0.5em;">
+            Conversation: id = #{conversation.id}, #{conversation.longRunning ? 'long running' : 'temporary'}#{conversation.nested ? ', nested, parent id = '.concat(conversation.parentId) : ''}
+            #{' - '}
+            Ajax4jsf Log (Ctrl+Shift+D)
+            #{' - '}
+            <s:link id="debugConsole" view="/debug.xhtml" value="Debug console" target="debugConsole"/>
+            #{' - '}
+            <s:link id="resetSession" view="/home.xhtml" action="#{org.jboss.seam.web.session.invalidate}" propagation="none" value="Terminate session"/>
+         </p>
+         </s:fragment>
+      </div>
+   </body>
+</html>
+</f:view>

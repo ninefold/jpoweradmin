@@ -1,0 +1,64 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    template="layout/template.xhtml">
+	<ui:define name="body">
+	
+	<h1>URL Redirection and E-mail Forwarding Records</h1>
+
+		<p>CustomDNS supports URL and e-mail redirection through so called 
+		fancy records. These records are specific to CustomDNS and the underlying 
+		infrastructure DNS server <a href="http://www.powerdns.com" class="external" target="display">Power DNS</a>. <strong>These records should not be used if you are having additional secondary/slave DNS with third party providers as they may not replicate correctly.</strong></p>
+	
+	<h2 id="urlRedirectionHeading">URL Redirection</h2>
+	
+		<p>URL records allow you to redirect requests to your domain to a different domain. For example, you might wish to redirect all requests to www.example.ca to www.example.com.</p>
+		<p>To create an URL redirect in the "Create Record" form in the zone in question:</p>
+		
+		<ol>
+			<li>In the "Record Name" field, enter the name of the record to redirect from. </li>
+			<li>Select "URL" as the Record Type from the "Record Type" selection menu.</li>
+			<li>In the "Record Content" field, enter the full URL to redirect to.</li>
+		</ol>
+
+	<p>Figure 1 shows the steps necessary to create a URL redirect</p>
+
+	<div class="image">
+		<h:graphicImage alt="URL Redirection" value="/img/url-redirect.png"/>
+		<div class="caption">Figure 1: Creating URL redirection records</div>
+	</div>
+
+	<p>In Figure 1, any requests to www.nicmus.ca are redirected to http://www.nicmus.com.</p>
+	
+	<p>There is limited support for wild cards in the URL redirection. One can enter "*.example.ca" to have any request ending on ".example.ca" be redirected.</p>
+
+	<p>In order for the URL redirect to function correctly, there <strong>must not</strong> be an "A" record matching the record name to redirect from.</p>
+
+	<h2 id="emailRedirectionHeading">E-mail Forwarding</h2>
+	
+	<p>E-mail forwarding is provided by the "MBOXFW" record type. E-mail forwarding allows for email addressed to your domain to be forwarded to third party email services. For example, one might wish to have all email addressed to *@example.com be forwarded to yourname@gmail.com.</p>
+	<p>To create an e-mail forward, in the "Create Record" form for the zone in question:</p>
+	
+	<ol>
+		<li>In the "Record Name" field, enter the email address that mail will be forwarded from.</li>
+		<li>Select "MBOXFW" from the "Record Type" selection menu.</li>
+		<li>In the "Record Content" field, enter the full email address that will receive the forwards.</li>
+	</ol>
+	
+	<div class="image">
+		<h:graphicImage  value="/img/email-redirect.png"/>
+		<div class="caption">Figure 2: Creating e-mail redirection record</div>
+	</div>
+	
+	<p>In Figure 2, any email sent to the example.com domain will be redirected to the address specified in the "Record Content field" - in this case yourname@gmail.com</p>
+		
+	<p>For e-mail forwarding to work, there <strong>must not</strong> be any MX records in the zone whose email will be forwarded.</p>
+		
+
+	</ui:define>
+</ui:composition>

@@ -1,0 +1,159 @@
+<!DOCTYPE composition PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:s="http://jboss.com/products/seam/taglib"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:rich="http://richfaces.org/rich"
+    xmlns:a4j="http://richfaces.org/a4j"
+    template="layout/template.xhtml">
+    
+    <ui:define name="body">
+        <h1>
+        	<s:span>#{messages.ZoneRecordsFor} #{domain.name}</s:span>
+        </h1>
+        
+        <s:div styleClass="backLink">
+        	<s:link view="/zones.xhtml" value="&#171; &nbsp; #{messages.BackToZones}" propagation="end" />
+        </s:div>
+ 
+        <h:form rendered="#{recordPaginationDAO.numRecords > 0}">
+        	<a4j:queue ignoreDupResponses="true" requestDelay="100" />
+	        <rich:dataTable id="recordsTable" var="record" value="#{recordDataModel}" reRender="ds" rows="20" columnClasses="top,top,top,top" onRowMouseOver="this.style.backgroundColor='#F1F1F1'" onRowMouseOut="this.style.backgroundColor='#{a4jSkin.tableBackgroundColor}'" width="100%;">
+	        	<f:facet name="header">
+	        		<rich:columnGroup>
+	        			<rich:column colspan="9">
+	        				<h:outputText value="#{messages.Records}" />
+	        			</rich:column>
+	        		</rich:columnGroup>
+	        	</f:facet>
+
+	        	<rich:column styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+	        		<h:selectBooleanCheckbox value="#{recordDataModel.selectedRecords[record]}" rendered="#{record.type != 'SOA'}">
+	        			<a4j:support event="onclick" requestDelay="10" reRender="recordsTable" ></a4j:support>
+	        		</h:selectBooleanCheckbox>
+	        	</rich:column>
+
+	        	<rich:column styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+	        		<f:facet name="header">
+	        			<h:outputText value="#{messages.Action}" />
+	        		</f:facet>
+	        		
+	        		<a4j:commandLink value="#{messages.Edit}" action="#{recordAction.viewSOA(record)}" rendered="#{record.type == 'SOA'}"/>
+					
+					<a4j:commandLink value="#{messages.Edit}" action="#{recordAction.viewEdit(record)}"  rendered="#{record.type != 'SOA'}"/>
+
+  		       	</rich:column>
+	        	
+	        	<rich:column sortBy="#{record.name}"  filterBy="#{record.name}" filterValue="#{recordDataModel.filterValue}" filterEvent="onkeyup" width="30%;" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+	        		<f:facet name="header">
+	        			<h:outputText value="#{messages.Record}"/>
+	        		</f:facet>
+	        		<h:outputText value="#{record.name}" />
+				</rich:column>
+	        	
+	        	<rich:column sortBy="#{record.type}" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+	        		<f:facet name="header">
+	        			<h:outputText value="#{messages.Type}" />
+	        		</f:facet>
+	        		<h:outputText value="#{record.type}" />
+	        	</rich:column>
+				
+				<rich:column styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+					<f:facet name="header">
+						<h:outputText value="#{messages.Priority}" />
+					</f:facet>
+					<h:outputText value="#{record.prio}" />
+				</rich:column>
+				
+				<rich:column sortBy="#{record.content}" width="30%" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+					<f:facet name="header">
+						<h:outputText value="#{messages.PointsTo}" />
+					</f:facet>
+					<h:outputText value="#{record.content}" />
+				</rich:column>
+				
+				<rich:column width="50px;" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+					<f:facet name="header">
+						<h:outputText value="#{messages.TimeToLive}" />
+					</f:facet>
+					<h:outputText value="#{record.ttl}" />
+				</rich:column>
+				
+				<rich:column sortBy="#{record.dateCreated}" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+					<f:facet name="header">
+						<h:outputText value="#{messages.DateCreated}" />
+					</f:facet>
+					<h:outputText value="#{record.dateCreated}">
+						<s:convertDateTime type="both" dateStyle="medium" timeZone="#{timeZone}"/>
+					</h:outputText>
+				</rich:column>
+	        	
+	        	<rich:column sortBy="#{record.dateModified}" styleClass="#{recordDataModel.selectedRecords[record] ? 'selectedRow' : ''}">
+					<f:facet name="header">
+						<h:outputText value="#{messages.DateModified}" />
+					</f:facet>
+					<h:outputText value="#{record.dateModified}">
+						<s:convertDateTime type="both" dateStyle="medium" timeZone="#{timeZone}"/>
+					</h:outputText>
+				</rich:column>
+	        	
+	        	<f:facet name="footer">
+	        		<rich:datascroller for="recordsTable" id="ds" renderIfSinglePage="false" action="#{recordDataModel.update}"/>
+	        	</f:facet>
+	        </rich:dataTable>
+	        <h:commandButton action="confirm" value="#{messages.DeleteSelected}" rendered="#{recordPaginationDAO.numRecords > 0}"/>
+		</h:form>
+	
+	
+		<rich:panel rendered="#{recordPaginationDAO.numRecords == 0}">
+			#{messages.NoRecordWarning}
+		</rich:panel>
+	
+		<rich:spacer width="1" height="25"></rich:spacer>
+		<rich:separator lineType="solid" height="3" ></rich:separator>
+		<rich:spacer width="1" height="25"></rich:spacer>
+		 
+		<h:form>
+		<rich:panel>
+			<f:facet name="header">
+				<h:outputText value="#{messages.CreateRecord}" />
+			</f:facet>
+				<h:panelGrid columns="1">
+
+					<s:decorate id="recordNameField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordName}</ui:define>
+						<h:inputText id="recordName" value="#{newRecord.name}" required="false"/>
+					</s:decorate>
+					
+					<s:decorate id="recordTypeField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordType}</ui:define>
+						<h:selectOneMenu value="#{newRecord.type}" required="true">
+							<s:selectItems var="type" value="#{normalRecordTypes}" label="#{type}" />
+						</h:selectOneMenu>
+					</s:decorate>
+					
+					<s:decorate id="recordTTLField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.TimeToLive}</ui:define>
+						<h:inputText id="recordTTL" value="#{newRecord.ttl}" size="6"/>
+					</s:decorate>
+
+					<s:decorate id="recordPriorityField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.Priority}</ui:define>
+						<h:inputText id="priority" value="#{newRecord.prio}" size="6"/>
+					</s:decorate>
+
+					
+					<s:decorate id="recordValueField" template="layout/edit.xhtml">
+						<ui:define name="label">#{messages.RecordContent}</ui:define>
+						<h:inputText id="recordValue" value="#{newRecord.content}" required="true" />
+					</s:decorate>		
+				</h:panelGrid>
+		</rich:panel>
+		<h:commandButton value="#{messages.CreateRecord}" action="#{recordAction.addRecord(newRecord)}"/>
+		</h:form>
+		
+
+    </ui:define>
+</ui:composition>
