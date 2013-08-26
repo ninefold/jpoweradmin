@@ -2,6 +2,9 @@ About
 ================================================================================
 JPower Admin is a web application used to manage PowerDNS installations. 
 
+Ninefold Note:
+This repo has been modified for use by Ninefold. Use the git log to discover what's changed.
+
 Licensing
 ===============================================================================
 This program is free software: you can redistribute it and/or modify
